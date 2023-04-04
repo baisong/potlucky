@@ -1,4 +1,6 @@
 <script lang="ts">
+    // From Typescript PostCSS Template
+    // https://github.com/JoshQuaintance/SvelteKit-Template
     import Clock from '$components/Clock.svelte';
     import CounterButton from '$components/CounterButton.svelte';
 </script>
