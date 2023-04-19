@@ -1,12 +1,12 @@
 <script lang="ts">
+    import HighlightGroup from '$components/HighlightGroup.svelte';
     // From Typescript PostCSS Template
     // https://github.com/JoshQuaintance/SvelteKit-Template
-    import Clock from '$components/Clock.svelte';
-    import CounterButton from '$components/CounterButton.svelte';
+    import Highlight from '$components/Highlight.svelte';
 </script>
 
 <svelte:head>
-    <title>SvelteKit Template</title>
+    <title>Potluck</title>
 
     <meta
         name="description"
@@ -15,7 +15,7 @@
 
 <div class="container">
     <span class="text-9xl font-bold mb-10" id="techStack">
-        Hello <br />
+        Potluck<br />
         <a href="https://kit.svelte.dev" target="_blank" rel="noreferrer">
             <span id="sveltekit" class="bg-clip-text bg-gradient-to-r text-transparent">SvelteKit</span>
         </a>
@@ -27,9 +27,19 @@
         </a>!
     </span>
 
-    <CounterButton />
+    <h1>Players</h1>
+    <HighlightGroup>
+        <Highlight />
+        <Highlight />
+        <Highlight />
+    </HighlightGroup>
 
-    <Clock />
+    <h1>Gifts</h1>
+    <HighlightGroup>
+        <Highlight />
+        <Highlight />
+        <Highlight />
+    </HighlightGroup>
 </div>
 
 <style lang="postcss">
