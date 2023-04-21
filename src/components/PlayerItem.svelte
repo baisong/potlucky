@@ -1,7 +1,7 @@
 <script>
     import { getContext, setContext, onMount } from 'svelte';
 
-    import { players, activePlayerId } from '$components/game.js';
+    import { players, gifts, activePlayerId } from '$components/game.js';
 
     const highlighted = getContext('highlighted');
 
@@ -42,6 +42,7 @@
             highlight = true;
             $highlighted = { [id]: true };
             $activePlayerId = player.id;
+            $gifts = $gifts;
             //$players = updateHighlighted($players, player, true);
         } else {
             highlight = false;
