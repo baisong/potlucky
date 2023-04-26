@@ -5,10 +5,10 @@
     import HighlightGroup from '$components/HighlightGroup.svelte';
     import Highlight from '$components/Highlight.svelte';
 
-    import { players, gifts, activePlayerId } from '$components/game.js';
+    import { players, gifts, wants, activePlayerId } from '$components/game.js';
     import PlayerItem from '$components/PlayerItem.svelte';
     import GiftItem from '$components/GiftItem.svelte';
-    import WantItem from '$components/WantItem.svelte';
+    import WishItem from '$components/WishItem.svelte';
 
     function isActivePlayersGift(gift) {
         return gift && gift.from === $activePlayerId;
@@ -19,7 +19,9 @@
     $: activeGifts = $gifts.length ? $gifts.filter(isActivePlayersGift) : [];
     $: inactiveGifts = $gifts.length ? $gifts.filter(notActivePlayersGift) : [];
     let newPlayerName = '';
-    $: activePlayerName = $players.filter(p => p.id == $activePlayerId).length ? $players.filter(p => p.id == $activePlayerId)[0].name : "Someone";
+    $: activePlayerName = $players.filter((p) => p.id == $activePlayerId).length
+        ? $players.filter((p) => p.id == $activePlayerId)[0].name
+        : 'Someone';
     $: newPlayerId =
         Math.max.apply(
             Math,
@@ -77,16 +79,16 @@
         content="An opinionated SvelteKit template complete with Tailwind, PlayWright, Vitest, and Husky pre-installed" />
 </svelte:head>
 
-<div
-    class="container"
-    on:click={() =>
-        console.log({ activePlayerId: $activePlayerId, activeGifts, allGifts: $gifts })}>
+<div class="container" on:click={() => console.log({ activePlayerId: $activePlayerId, activeGifts, allGifts: $gifts })}>
     <span id="potluck" class="bg-clip-text bg-gradient-to-r text-transparent">potluck</span>
 </div>
 
 <main>
+    <header>
+        <h1>Players</h1>
+        <p>Everyone who wants to give away some gifts!</p>
+    </header>
     <section>
-        <h1>players</h1>
         <HighlightGroup>
             {#each $players as player}
                 <PlayerItem {player} />
@@ -96,15 +98,18 @@
             <form method="POST" action="?/newPlayer" use:enhance={submitNewPlayer}>
                 <label for="name"
                     >name
-                    <input name="name" type="text" bind:value="{newPlayerName}" placeholder="new player" />
+                    <input name="name" type="text" bind:value={newPlayerName} placeholder="new player" />
                     <input type="hidden" name="id" value={newPlayerId} />
                     <button>add</button>
                 </label>
             </form>
         </aside>
     </section>
+    <header>
+        <h1>{activePlayerName}'s give-away basket</h1>
+        <p>The gifts you want to give away to others</p>
+    </header>
     <section>
-        <h1>{activePlayerName}'s gifts</h1>
         <HighlightGroup>
             {#each activeGifts as gift}
                 <GiftItem {gift} />
@@ -122,24 +127,55 @@
             </form>
         </aside>
     </section>
+    <header>
+        <h1>{activePlayerName}'s new options</h1>
+        <p>The gifts you might want to add to your wishlist, or not!</p>
+    </header>
     <section>
-        <h1>{activePlayerName}'s wants</h1>
+        <!--
+        <ul class="option-group">
+            <li class="option-item">
+                <label>
+                    <input type="checkbox" name="show-other-wishes" />
+                    Show others' wishes
+                </label>
+            </li>
+            <li class="option-item">
+                <label>
+                    <input type="checkbox" name="show-wish-names" />
+                    Show others' names
+                </label>
+            </li>
+        </ul>
+        -->
         <HighlightGroup>
-            {#each inactiveGifts as want}
-                <WantItem {want} />
+            {#each inactiveGifts as wish}
+                <WishItem {wish} />
             {/each}
         </HighlightGroup>
-        <aside>
-            <form method="POST" action="?/newGift" use:enhance={submitNewGift}>
-                <label
-                    >label
-                    <input type="text" name="label" placeholder="new gift" />
-                    <input type="hidden" name="id" value={newGiftId} />
-                    <input type="hidden" name="from" value={$activePlayerId} />
-                    <button>add</button>
-                </label>
-            </form>
-        </aside>
+    </section>
+
+    <header>
+        <h1>{activePlayerName}'s wishlist</h1>
+        <p>The gifts you would like to receive, in ranked order</p>
+    </header>
+    <section>
+        <HighlightGroup>
+            {#each inactiveGifts as wish}
+                <WishItem {wish} />
+            {/each}
+        </HighlightGroup>
+        <header>
+            <h2>{activePlayerName}'s wish-away basket</h2>
+            <p>The gifts you would rather give away than receive</p>
+        </header>
+        <section>
+            <HighlightGroup>
+                {#each inactiveGifts as wish}
+                    <WishItem {wish} />
+                {/each}
+            </HighlightGroup>
+        </section>
     </section>
 </main>
 
@@ -188,5 +224,10 @@
         background: #eee;
         padding: 0 0.5em;
         border: 1px solid lightgray;
+    }
+    p {
+        color: #555;
+        font-weight: 300;
+        font-size: 0.9em;
     }
 </style>

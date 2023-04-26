@@ -5,9 +5,9 @@
 
     const highlighted = getContext('highlighted');
 
-    export let gift = {
+    export let wish = {
         id: -1,
-        label: 'Gift'
+        label: 'Wish'
     };
 
     let id = Math.floor(Math.random() * Date.now());
@@ -16,6 +16,7 @@
     $: highlight = $highlighted[id];
 
     const handleClick = () => {
+        console.log(wish);
         if (!highlight) {
             highlight = true;
             $highlighted = { [id]: true };
@@ -26,11 +27,25 @@
         }
         //console.log($players);
     };
+
+    const weighInOn = (playerWishes) => {
+        if (typeof playerWishes === "undefined") playerWishes = true;
+    }
 </script>
 
-<button class:highlight on:click={handleClick}>
-    {gift.label}
-</button>
+<ul class="item-container">
+    <li>
+        <button class="mini-button" on:click={weighInOn}>yes</button>
+    </li>
+    <li>
+        <button class:highlight on:click={handleClick}>
+            {wish.label}
+        </button>
+    </li>
+    <li>
+        <button class="mini-button" on:click={() => weighInOn(false)}>no</button>
+    </li>
+</ul>
 
 <style>
     .highlight {
@@ -38,11 +53,16 @@
         color: black;
         border-color: black;
     }
-    button {
+    .item-container {
         background: #ddd;
         border-radius: 50%;
         height: 5em;
         width: 5em;
         border: 1px solid #bbb;
+        display: flex;
+        flex-direction: column;
+    }
+    .item-container li {
+        flex: 1;
     }
 </style>

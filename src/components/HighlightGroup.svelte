@@ -14,5 +14,8 @@
 	.highlight-wrapper {
 		padding: 0.25em;
 		margin: 1em 0;
+		display: flex;
+		width: 100%;
+		justify-content: center;
 	}
 </style>
