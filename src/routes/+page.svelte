@@ -35,38 +35,20 @@
         return gift && gift.from !== $activePlayerId;
     }
     let newPlayerName = '';
+    let newGiftLabel = '';
     $: activePlayerName = potluck_players.filter((p) => p._id == $activePlayerId).length
         ? potluck_players.filter((p) => p._id == $activePlayerId)[0]?.name
         : 'Someone';
-    $: newPlayerId =
-        Math.max.apply(
-            Math,
-            potluck_players.map(function (o) {
-                return o.id;
-            })
-        ) + 1;
-    $: newGiftId =
-        Math.max.apply(
-            Math,
-            potluck_gifts.map(function (o) {
-                return o.id;
-            })
-        ) + 1;
+
     $: ({ potluck_players, potluck_gifts, potluck_wishes } = data);
-    $: console.log({ potluck_players, potluck_gifts });
 
     const submitNewPlayer = () => {
         return ({ result, update }) => {
             if (result?.success) {
-                console.log({ data: result.data, pass: parseInt(result.data.newPlayer.id) === newPlayerId });
-                if (parseInt(result.data.newPlayer.id) === newPlayerId) {
-                    //$players.push(result.data.newPlayer);
-                    //$players = $players;
-                    invalidate('app:potluck');
-                    newPlayerName = '';
-                    console.log({ potluck_players });
-                }
-                //                console.log( { result, update } );
+                console.log({ data: result.data });
+                invalidate('app:potluck');
+                newPlayerName = '';
+                console.log({ potluck_players });
             } else {
                 update();
             }
@@ -75,13 +57,10 @@
     const submitNewGift = () => {
         return ({ result, update }) => {
             if (result.success) {
-                console.log({ data: result.data, pass: parseInt(result.data.newGift.id) === newGiftId });
-                if (parseInt(result.data.newGift.id) === newGiftId) {
-                    //$gifts.push(result.data.newGift);
-                    //$gifts = $gifts;
-                    invalidate('app:potluck');
-                    console.log({ potluck_gifts });
-                }
+                console.log({ data: result.data });
+                invalidate('app:potluck');
+                newGiftLabel = '';
+                console.log({ potluck_gifts });
                 //                console.log( { result, update } );
             } else {
                 update();
@@ -89,13 +68,15 @@
         };
     };
 
+    function debugGiftLists() {
+        console.log({ activeGifts, inactiveGifts });
+    }
     if ($activePlayerId == 0 && data?.potluck_players[0]?._id.length) {
         $activePlayerId = data?.potluck_players[0]._id;
     }
 
-    $: activeGifts = data.potluck_gifts.length ? data.potluck_gifts.filter(isActivePlayersGift) : [];
-    $: inactiveGifts = data.potluck_gifts.length ? data.potluck_gifts.filter(notActivePlayersGift) : [];
-    
+    $: activeGifts = data.potluck_gifts.length ? data.potluck_gifts.filter(g => g.from === $activePlayerId) : [];
+    $: inactiveGifts = data.potluck_gifts.length ? data.potluck_gifts.filter(g => g.from !== $activePlayerId) : [];
 </script>
 
 <svelte:head>
@@ -108,14 +89,14 @@
 
 <div
     class="container"
-    on:click={() => console.log({ activePlayerId: $activePlayerId, activeGifts, allGifts: potluck_gifts })}
+    on:click={() => console.log({ activePlayerId: $activePlayerId, activeGifts, inactiveGifts })}
     on:keypress={() => console.log('Hello.')}>
     <span id="potluck" class="bg-clip-text bg-gradient-to-r text-transparent">potluck</span>
 </div>
 
 <main>
     <header>
-        <h1>Players</h1>
+        <h1 on:click={() => debugGiftLists()}>Players</h1>
         <p>Everyone who wants to give away some gifts!</p>
     </header>
     <section>
@@ -129,7 +110,6 @@
                 <label for="name"
                     >name
                     <input name="name" type="text" bind:value={newPlayerName} placeholder="new player" />
-                    <input type="hidden" name="id" value={newPlayerId} />
                     <button>add</button>
                 </label>
             </form>
@@ -149,8 +129,7 @@
             <form method="POST" action="?/newGift" use:enhance={submitNewGift}>
                 <label
                     >label
-                    <input type="text" name="label" placeholder="new gift" />
-                    <input type="hidden" name="id" value={newGiftId} />
+                    <input type="text" name="label" placeholder="new gift" bind:value={newGiftLabel} />
                     <input type="hidden" name="from" value={$activePlayerId} />
                     <button>add</button>
                 </label>
@@ -162,6 +141,12 @@
         <p>The gifts you might want to add to your wishlist, or not!</p>
     </header>
     <section>
+        <HighlightGroup>
+            {#each inactiveGifts as wish}
+                <WishItem {wish} />
+            {/each}
+        </HighlightGroup>
+
         <!--
         <ul class="option-group">
             <li class="option-item">
@@ -178,11 +163,6 @@
             </li>
         </ul>
         -->
-        <HighlightGroup>
-            {#each inactiveGifts as wish}
-                <WishItem {wish} />
-            {/each}
-        </HighlightGroup>
     </section>
 
     <header>
