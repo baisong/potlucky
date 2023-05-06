@@ -1,21 +1,24 @@
-# SvelteKit Template
+# potluck sveltekit demo
 
-A SvelteKit template with Tailwind integrated with a purpose of being flexible. The template itself can be used in a whole wide range of projects and I personally have.
+Work-in-progress: Potluck is a hypersonic gift-giving game for mutual aid. This is a web app version written in sveltekit with mongodb.
 
-Since SvelteKit is still in development, there will be ne changes coming to the template. The last major update has prompted the rebuild of the template following some of the new standards of SvelteKit
+## Thank you
 
-> _Note: This is an opinionated template, everything will be according to my liking, but to the nature of the flexibility of the template, it shouldn't take much to configure it to one's own liking_
->
-> This is a part of the rebuilt template, if the legacy template is required,
-> there is a branch called `legacy` in the GitHub repository,
-> just simply clone that branch
-> (I will try to update it but if an issue comes up, simply create an issue in GitHub)
+### The story of this code
 
-![Template Preview Image](Preview.png)
+You know gifts? Yeah. Giving and getting gifts has happened forever. This is just one way to do it.
 
-## What's in the box
+For example, some people love board games. Some of those boardgame lovers have met up to share their games via a forum on the BoardGameGeek (BGG) website.
 
-Here is the list of technologies that are used in this template
+Around 2007, Chris Okasaki implemented a [700-line Trade Maximizer in the Java language](https://github.com/chrisokasaki/TradeMaximizer/blob/master/src/tm/TradeMaximizer.java), and it was used to maximize the number of trades based on what games/items people have, who wants those items, and how much they want them.
+
+Around 2018, Jeff Michaud translated that Java library into a [1600-line Javascript version](https://bgg.activityclub.org/olwlg/trademax.js).
+
+This project is inspired by [nextjs-potluck by Kevin Nguyen](https://github.com/lightandluck/nextjs-potluck)).
+
+## Template
+
+This app was started from [Joshua Quaintance's opinionated SvelteKit template with Tailwind and typescript](https://github.com/JoshQuaintance/SvelteKit-Template). Here is the list of technologies that are used in this template
 
 ---
 
