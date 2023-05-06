@@ -95,5 +95,14 @@ export const actions: Actions = {
             }
         };
         return response;
-    }
+    },
+    delGift: async ({ cookies, request }) => {
+        const data = await request.formData();
+        const delQuery = {
+            _id: new ObjectId(data.get('_id')),
+        }
+        console.log({delQuery})
+        const result = await gifts.deleteOne(delQuery);
+        return result;
+    },
 };
