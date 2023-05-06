@@ -92,6 +92,7 @@
     on:click={() => console.log({ activePlayerId: $activePlayerId, activeGifts, inactiveGifts })}
     on:keypress={() => console.log('Hello.')}>
     <span id="potluck" class="bg-clip-text bg-gradient-to-r text-transparent">potluck</span>
+    <p>An <a href="https://github.com/baisong/potlucky">open source</a> hypersonic gift-giving game for mutual aid.</p>
 </div>
 
 <main>
