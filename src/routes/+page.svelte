@@ -23,6 +23,7 @@
     import GiftItem from '$components/GiftItem.svelte';
     import WishItem from '$components/WishItem.svelte';
     import type { PageData } from './$types';
+    import { invalidate } from '$app/navigation';
 
     export let data: PageData;
 
@@ -58,13 +59,14 @@
 
     const submitNewPlayer = () => {
         return ({ result, update }) => {
-            if (result.type === 'success') {
+            if (result?.success) {
                 console.log({ data: result.data, pass: parseInt(result.data.newPlayer.id) === newPlayerId });
                 if (parseInt(result.data.newPlayer.id) === newPlayerId) {
-                    $players.push(result.data.newPlayer);
-                    $players = $players;
+                    //$players.push(result.data.newPlayer);
+                    //$players = $players;
+                    invalidate('app:potluck');
                     newPlayerName = '';
-                    console.log({ players: $players });
+                    console.log({ potluck_players });
                 }
                 //                console.log( { result, update } );
             } else {
@@ -187,8 +189,8 @@
             {/each}
         </HighlightGroup>
         <header>
-            <h2>{activePlayerName}'s wish-away basket</h2>
-            <p>The gifts you would rather give away than receive</p>
+            <h2>{activePlayerName}'s seen list</h2>
+            <p>The gifts you've seen and don't want</p>
         </header>
         <section>
             <HighlightGroup>
