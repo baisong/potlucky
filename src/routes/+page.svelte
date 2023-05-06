@@ -1,4 +1,17 @@
 <script lang="ts">
+    // @TODO
+    // Add database table/functions for players
+    // Add database table/functions for gifts
+    // Add game IDs
+    // Add database table/functions for games
+    // Add welcome page w "new game" / "revive game" buttons
+    // Add drag-and-drop wishlist zones (newoptions, wishlist, wishaway basket)
+    // Create form action for exchange algorithm
+    // Create UI for exchange directions for each player
+    // Create yunohost app script
+    // Create hot potato mode
+    // Test offline browser storage saving
+
     // From Typescript PostCSS Template
     // https://github.com/JoshQuaintance/SvelteKit-Template
     import { enhance } from '$app/forms';
@@ -9,6 +22,9 @@
     import PlayerItem from '$components/PlayerItem.svelte';
     import GiftItem from '$components/GiftItem.svelte';
     import WishItem from '$components/WishItem.svelte';
+    import type { PageData } from './$types';
+
+    export let data: PageData;
 
     function isActivePlayersGift(gift) {
         return gift && gift.from === $activePlayerId;
@@ -36,7 +52,9 @@
                 return o.id;
             })
         ) + 1;
-    $: console.log($players);
+    $: console.log({ $players: $players });
+    $: ({ potluck_players } = data);
+    $: console.log({ potluck_players });
 
     const submitNewPlayer = () => {
         return ({ result, update }) => {
@@ -79,7 +97,10 @@
         content="An opinionated SvelteKit template complete with Tailwind, PlayWright, Vitest, and Husky pre-installed" />
 </svelte:head>
 
-<div class="container" on:click={() => console.log({ activePlayerId: $activePlayerId, activeGifts, allGifts: $gifts })}>
+<div
+    class="container"
+    on:click={() => console.log({ activePlayerId: $activePlayerId, activeGifts, allGifts: $gifts })}
+    on:keypress={() => console.log('Hello.')}>
     <span id="potluck" class="bg-clip-text bg-gradient-to-r text-transparent">potluck</span>
 </div>
 
@@ -90,7 +111,7 @@
     </header>
     <section>
         <HighlightGroup>
-            {#each $players as player}
+            {#each potluck_players as player}
                 <PlayerItem {player} />
             {/each}
         </HighlightGroup>
@@ -196,16 +217,14 @@
         float: left;
         text-align: center;
     }
-    #techStack {
-    }
     #potluck {
         @apply from-green-500 via-indigo-500 to-[#FE5858];
     }
-
+    /* 
     #tailwind {
         @apply cursor-pointer;
         @apply from-green-400 via-blue-500 to-indigo-500;
-    }
+    } */
     h1 {
         background: #ddd;
     }

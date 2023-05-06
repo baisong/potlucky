@@ -15,7 +15,8 @@ const config = {
     kit: {
         adapter: adapter(),
         alias: {
-            $components: resolve('./src/components/')
+            $components: resolve('./src/components/'),
+            $db: resolve('./src/db/')
         }
     }
 };
