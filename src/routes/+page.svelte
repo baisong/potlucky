@@ -31,31 +31,29 @@
         return gift && gift.from === $activePlayerId;
     }
     function notActivePlayersGift(gift) {
+        //console.log({gift});
         return gift && gift.from !== $activePlayerId;
     }
-    $: activeGifts = $gifts.length ? $gifts.filter(isActivePlayersGift) : [];
-    $: inactiveGifts = $gifts.length ? $gifts.filter(notActivePlayersGift) : [];
     let newPlayerName = '';
-    $: activePlayerName = $players.filter((p) => p.id == $activePlayerId).length
-        ? $players.filter((p) => p.id == $activePlayerId)[0].name
+    $: activePlayerName = potluck_players.filter((p) => p._id == $activePlayerId).length
+        ? potluck_players.filter((p) => p._id == $activePlayerId)[0]?.name
         : 'Someone';
     $: newPlayerId =
         Math.max.apply(
             Math,
-            $players.map(function (o) {
+            potluck_players.map(function (o) {
                 return o.id;
             })
         ) + 1;
     $: newGiftId =
         Math.max.apply(
             Math,
-            $gifts.map(function (o) {
+            potluck_gifts.map(function (o) {
                 return o.id;
             })
         ) + 1;
-    $: console.log({ $players: $players });
-    $: ({ potluck_players } = data);
-    $: console.log({ potluck_players });
+    $: ({ potluck_players, potluck_gifts, potluck_wishes } = data);
+    $: console.log({ potluck_players, potluck_gifts });
 
     const submitNewPlayer = () => {
         return ({ result, update }) => {
@@ -76,12 +74,13 @@
     };
     const submitNewGift = () => {
         return ({ result, update }) => {
-            if (result.type === 'success') {
+            if (result.success) {
                 console.log({ data: result.data, pass: parseInt(result.data.newGift.id) === newGiftId });
                 if (parseInt(result.data.newGift.id) === newGiftId) {
-                    $gifts.push(result.data.newGift);
-                    $gifts = $gifts;
-                    console.log({ gifts: $gifts });
+                    //$gifts.push(result.data.newGift);
+                    //$gifts = $gifts;
+                    invalidate('app:potluck');
+                    console.log({ potluck_gifts });
                 }
                 //                console.log( { result, update } );
             } else {
@@ -89,6 +88,14 @@
             }
         };
     };
+
+    if ($activePlayerId == 0 && data?.potluck_players[0]?._id.length) {
+        $activePlayerId = data?.potluck_players[0]._id;
+    }
+
+    $: activeGifts = data.potluck_gifts.length ? data.potluck_gifts.filter(isActivePlayersGift) : [];
+    $: inactiveGifts = data.potluck_gifts.length ? data.potluck_gifts.filter(notActivePlayersGift) : [];
+    
 </script>
 
 <svelte:head>
@@ -101,7 +108,7 @@
 
 <div
     class="container"
-    on:click={() => console.log({ activePlayerId: $activePlayerId, activeGifts, allGifts: $gifts })}
+    on:click={() => console.log({ activePlayerId: $activePlayerId, activeGifts, allGifts: potluck_gifts })}
     on:keypress={() => console.log('Hello.')}>
     <span id="potluck" class="bg-clip-text bg-gradient-to-r text-transparent">potluck</span>
 </div>

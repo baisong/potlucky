@@ -24,10 +24,10 @@ export const load: PageServerLoad = async function ({ depends }) {
     });
 
     const raw_gifts = await gifts.find({}, { limit: 10 })
-    .project({ _id: 1, name: 1, id: 1 })
+    .project({ _id: 1, from: 1, label: 1, id: 1 })
     .toArray();
     const transformed_gifts = raw_gifts.map(p => {
-        return { name: p.name, id: p.id, _id: p._id.toString()}
+        return { label: p.label, from: p.from, _id: p._id.toString()}
     });
 
     const raw_wishes = await wishes.find({}, { limit: 10 })
@@ -60,7 +60,7 @@ export const actions: Actions = {
         const response = {
             success: result.acknowledged,
             newPlayer: {
-                id: newPlayer.id,
+                //id: newPlayer.id,
                 _id: newPlayer?._id.toString(),
                 name: newPlayer.name
             }
@@ -80,11 +80,20 @@ export const actions: Actions = {
     newGift: async ({ cookies, request }) => {
         const data = await request.formData();
         const newGift = {
-            from: parseInt(data.get('from')?.toString() || '-1'),
+            from: data.get('from')?.toString() || '-1',
             label: data.get('label'),
-            id: parseInt(data.get('id')?.toString() || '-1')
+            //id: parseInt(data.get('id')?.toString() || '-1')
         };
-        console.log(newGift);
-        return { success: true, newGift: newGift };
+        const result = await gifts.insertOne(newGift);
+        const response = {
+            success: result.acknowledged,
+            newGift: {
+                //id: newPlayer.id,
+                _id: newGift?._id.toString(),
+                label: newGift.label,
+                from: newGift.from,
+            }
+        };
+        return response;
     }
 };
